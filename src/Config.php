@@ -162,10 +162,13 @@ class Config extends Object implements \ArrayAccess, \Countable, \Iterator
     /**
      * Set all attributes
      * @param array $attributes
+     * @param bool  $overrideExists
      */
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes, bool $overrideExists = true)
     {
         foreach ($attributes as $key => $value) {
+            if (!$overrideExists && isset($this->values[$key])) continue;
+
             $this->values[$key] = $value;
         }
     } // end setAttributes()
