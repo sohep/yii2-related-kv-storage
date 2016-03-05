@@ -1,7 +1,8 @@
-# Related key-value storage for Yii2. Based on SQL database
+# Related key-value storage for Yii2.
 
 ## Description
 
+Based on SQL database
 @TODO:
 
 Feel free to let me know what else you want added via:
