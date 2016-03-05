@@ -5,7 +5,7 @@ use Yii;
 use yii\db\Query;
 
 /**
- * This is the model class for table "user_config".
+ * This class can be use as model. Please, create instance with help Yii::createObject() for configure instance.
  */
 class RelatedConfig extends Config
 {
