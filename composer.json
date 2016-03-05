@@ -1,0 +1,21 @@
+{
+    "name": "ancor/yii2-related-kv-storage",
+    "description": "Related key-value storage in SQL Database.",
+    "type": "yii2-extension",
+    "license": "GPLv3",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Anton Korniychuk",
+            "email": "ancor.dev@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "^2.0"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "ancor\\relatedKvStorage\\" : "src"
+        }
+    }
+}
