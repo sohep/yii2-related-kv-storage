@@ -12,7 +12,7 @@ use yii\helpers\ArrayHelper;
 
 /**
  * Simple key-value storage with array-like access;
- *
+ * @property array $attributes set many attributes from array, or get all attributes as array
  */
 class Config extends Object implements \ArrayAccess, \Countable, \Iterator
 {
@@ -150,6 +150,25 @@ class Config extends Object implements \ArrayAccess, \Countable, \Iterator
         return ['in', $this->keyField, $this->deleteKeys];
     } // end getDeleteCondition()
 
+
+    /**
+     * Get all attributes
+     */
+    public function getAttributes()
+    {
+        return $this->values;
+    } // end getAttributes()
+
+    /**
+     * Set all attributes
+     * @param array $attributes
+     */
+    public function setAttributes(array $attributes)
+    {
+        foreach ($attributes as $key => $value) {
+            $this->values[$key] = $value;
+        }
+    } // end setAttributes()
 
 
     function rewind() {
