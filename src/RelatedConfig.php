@@ -1,4 +1,7 @@
 <?php
+/**
+ * Created by Anton Korniychuk <ancor.dev@gmail.com>.
+ */
 namespace ancor\relatedKvStorage;
 
 use Yii;
