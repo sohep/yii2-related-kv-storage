@@ -6,12 +6,86 @@ namespace ancor\relatedKvStorage;
 
 use Yii;
 use yii\base\Object;
+use yii\db\Exception;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 
 
 /**
- * Simple key-value storage with array-like access;
+ * # Simple key-value storage with array-like access.
+ *
+ * ### Features:
+ *
+ * + this class is the basis for RelatedConfig
+ * + array access to options (also countable and iterable)
+ * + this class can be use as yii component in $app container
+ * + this class is designed for inheritance and expansion
+ * + **autoload configuration** from database, when during instance creating
+ *
+ * Storage bases on MySQL table. It can be use to edit settings from admin panel.
+ *
+ * ### Configuration
+ *
+ * ```php
+ * 'components' => [
+ *     'config' => [
+ *         'class' => 'ancor\relatedKvStorage\Config',
+ *
+ *         // default settings
+ *         // 'tableName'  => '{{config}}',
+ *         // 'keyField'   => 'key',
+ *         // 'valueField' => 'value',
+ *     ]
+ * ]
+ * ```
+ *
+ * ### Usage
+ *
+ * Simple usage
+ * ```php
+ * Yii::$app->config['main-page.show-banner'] = true;
+ *
+ * if (Yii::$app->config['main-page.show-banner']) { ... }
+ * ```
+ *
+ * Iterable
+ * ```php
+ * $config = Yii::$app->config;
+ *
+ * foreach ($config as $key => $value) {
+ *     echo $key . ' -> ' . $value . "\n";
+ * }
+ * ```
+ *
+ * Configurations  was automatically loaded when instance created.
+ * But configurations will not be save automatically.
+ * ```php
+ * Yii::$app->config->attributes = [
+ *     'default.option-one' => true,
+ *     'default.option-two' => false,
+ * ];
+ *
+ * // Can be get, but didn't store
+ * echo Yii::$app->config['default.option-one']; // true
+ *
+ * // For convenience, let's make some variable
+ * $config = Yii::$app->config;
+ *
+ * // Save to database
+ * $config->save();
+ *
+ * // let's change any value
+ * $config['default.option-one'] = false;
+ * echo $config['default.option-one']; // false
+ *
+ * // And now, imagine that we need to reset changed values to default. Reload from database. Please note, ->save() was not fired.
+ * $config->reload();
+ * echo $config['default.option-one']; // true
+ *
+ * // If we need to array type
+ * echo gettype($config->attributes); // array
+ * ```
+ *
  * @property array $attributes set many attributes from array, or get all attributes as array
  */
 class Config extends Object implements \ArrayAccess, \Countable, \Iterator
@@ -75,7 +149,7 @@ class Config extends Object implements \ArrayAccess, \Countable, \Iterator
     } // end load()
 
     /**
-     * Save changes
+     * Save changes to database
      */
     public function save()
     {
@@ -91,7 +165,7 @@ class Config extends Object implements \ArrayAccess, \Countable, \Iterator
             $count += Yii::$app->db->createCommand()->delete($this->tableName, $deleteCondition)->execute();
             $this->deleteKeys = [];
             $transaction->commit();
-        } catch (\yii\db\Exception $e) {
+        } catch (Exception $e) {
             $transaction->rollBack();
             throw $e;
         }
@@ -152,7 +226,7 @@ class Config extends Object implements \ArrayAccess, \Countable, \Iterator
 
 
     /**
-     * Get all attributes
+     * Get all attributes as array. Can be use if need real array type.
      */
     public function getAttributes()
     {

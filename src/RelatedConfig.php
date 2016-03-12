@@ -8,7 +8,80 @@ use Yii;
 use yii\db\Query;
 
 /**
- * This class can be use as model. Please, create instance with help Yii::createObject() for configure instance.
+ * # Simple key-value storage like Config, but related to other entity.
+ *
+ * ### Features:
+ *
+ * + This class inherits all features from [[\ancor\relatedKvStorage\Config]]
+ * + Ideal for storing user preferences, and preferences need to has default values
+ *
+ * **The value is extracted in three steps**
+ *
+ * 1. Try to get *current* value from this(RelatedConfig) model.
+ * 2. Try to get *default* value from common config component(Yii::$app->config).
+ * 3. If the value has been not received will be returned null.
+ *
+ * *Please, create instance with help Yii::createObject() for configure instance.*
+ *
+ * ### Configuration
+ *
+ * **It is best to use through model.** Example for class User
+ * ```php
+ * use ancor\relatedKvStorage\RelatedConfig
+ *
+ * class User extends ... {
+ *
+ *    ...
+ *
+ *   /**
+ *    * Get user configuration
+ *    * @return RelatedConfig
+ *    * /
+ *   public function getConfig() {
+ *       $config = Yii::createObject([
+ *           'class'      => RelatedConfig::className(),
+ *           'relationId' => $this->id,
+ *
+ *           // Default settings
+ *           // 'tableName'           => '{{user_config}}',
+ *           // 'relationIdField'     => 'user_id',
+ *           // 'configComponentName' => 'config',
+ *           // 'useCommonConfig'     => true,
+ *       ]);
+ *   }
+ * }
+ * ```
+ *
+ * ### Usage
+ *
+ * // set default global settings
+ * Yii::$app->config->attributes = [
+ *    'user.dialogs.message-limit' => 100,
+ *    'user.friends.limit => 20,
+ * ];
+ *
+ * ```php
+ * $user = new User();
+ *
+ * $user->config = [
+ *
+ *      // this option has not default value in global settings
+ *     'user.dialogs.allow-modify' => true,
+ *
+ *      // override default value from global settings
+ *     'user.friends.limit' => 50,
+ * ];
+ *
+ * // Must have! ( getConfig() reload don't cache `config` object and reload every time. So we didn't do it )
+ * $user->config->save();
+ *
+ * // use current value
+ * echo $user->config['user.dialogs.allow-modify']; // true
+ * // override default, use current value
+ * echo $user->config['user.friends.limit']; // 50
+ * // have not current, use default value
+ * echo $user->config['user.dialogs.message-limit']; // 100
+ * ```
  */
 class RelatedConfig extends Config
 {
@@ -100,4 +173,16 @@ class RelatedConfig extends Config
 
         return $this->values[$offset] ?? $this->config[$offset] ?? null;
     }
+
+    /**
+     * Get all settings. Merged global with current.
+     */
+    public function getAttributes()
+    {
+        if ($this->useCommonConfig) {
+            return array_merge($this->config->attributes, $this->values);
+        }
+
+        return $this->values;
+    } // end getAttributes()
 }
