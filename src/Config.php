@@ -5,7 +5,7 @@
 namespace ancor\relatedKvStorage;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\Exception;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
@@ -88,7 +88,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property array $attributes set many attributes from array, or get all attributes as array
  */
-class Config extends Object implements \ArrayAccess, \Countable, \Iterator
+class Config extends BaseObject implements \ArrayAccess, \Countable, \Iterator
 {
     /**
      * @var mixed[] This is data of the model. key-value storage.
