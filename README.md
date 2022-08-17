@@ -1,4 +1,4 @@
-# Supporting php 8
+Supporting php 8
 
 # Related key-value storage for Yii2.
 
@@ -22,13 +22,13 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```bash
-$ php composer.phar require sohep/yii2-related-kv-storage
+$ php composer.phar require ancor/yii2-related-kv-storage
 ```
 
 or add
 
 ```
-"sohep/yii2-related-kv-storage": "dev-master"
+"ancor/yii2-related-kv-storage": "dev-master"
 ```
 
 to the `require` section of your `composer.json` file.
